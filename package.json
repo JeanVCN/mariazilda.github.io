@@ -1,0 +1,9 @@
+{
+  "name": "maria-zilda-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Site institucional de Maria Zilda, Terapeuta Master em TRG.",
+  "scripts": {
+    "build": "node --check script.js && node validate.js"
+  }
+}
