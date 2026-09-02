@@ -1,0 +1,50 @@
+.whatsapp-cta {
+  align-items: center;
+}
+
+.whatsapp-icon {
+  display: inline-block;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.whatsapp-icon-white {
+  background-image: url("assets/icons/whatsapp-white.svg");
+}
+
+.whatsapp-icon-green {
+  background-image: url("assets/icons/whatsapp-green.svg");
+}
+
+.button.whatsapp-cta,
+.header-cta.whatsapp-cta {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.header-cta .whatsapp-icon {
+  flex-basis: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.whatsapp-link .whatsapp-icon {
+  flex-basis: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.whatsapp-float .whatsapp-icon {
+  flex-basis: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.button-outline-light.whatsapp-cta:hover {
+  background: transparent;
+  color: #fff;
+}

@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Site institucional de Maria Zilda, Terapeuta Master em TRG.",
   "scripts": {
+    "start": "python3 -m http.server 4173",
     "build": "node --check script.js && node validate.js"
   }
 }

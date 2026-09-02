@@ -1,0 +1,13 @@
+.trust-bar {
+  margin-top: 54px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 16px 35px rgba(48, 60, 120, 0.1);
+}
+
+@media (max-width: 820px) {
+  .trust-bar {
+    margin-top: 36px;
+    margin-bottom: 20px;
+  }
+}
