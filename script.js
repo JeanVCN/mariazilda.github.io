@@ -21,6 +21,32 @@ nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () =>
   nav.classList.remove('open');
 }));
 document.querySelector('#current-year').textContent = new Date().getFullYear();
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const revealTargets = document.querySelectorAll('.trg-layout, .care-card, .about-layout, .certificate-showcase, .final-layout');
+
+if (!reduceMotion && 'IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealTargets.forEach((target) => {
+    target.dataset.reveal = '';
+    revealObserver.observe(target);
+  });
+}
+
+if (!reduceMotion) {
+  window.addEventListener('load', () => {
+    window.setTimeout(() => {
+      document.documentElement.classList.add('hero-signature-ready');
+    }, 420);
+  }, { once: true });
+}
 
 const dialog = document.querySelector('.certificate-dialog');
 const image = dialog.querySelector('.certificate-image');

@@ -1,0 +1,43 @@
+.signature-word {
+  display: inline-block;
+  position: relative;
+}
+
+.signature-word::after {
+  position: absolute;
+  right: 1%;
+  bottom: -0.1em;
+  left: 1%;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9c7cc9, #6f82c4);
+  content: "";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .signature-word::after {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .hero-signature-ready .signature-word::after {
+    animation: signature-line-draw 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 560ms ease-out, transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes signature-line-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+}
