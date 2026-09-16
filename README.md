@@ -14,7 +14,8 @@ Não há dependências instaladas, lint ou suíte de testes neste momento.
 - A política provisória está em `politica-de-privacidade/index.html`. O texto exige revisão jurídica antes da publicação definitiva e contém pendências explícitas de contato e identificação.
 - `script.js` inicia o consentimento de análise e publicidade como negado. A preferência fica em `localStorage` sob `maria-zilda-cookie-consent`; é possível alterá-la pelo rodapé.
 - Parâmetros de atribuição são mantidos somente durante a sessão, em `sessionStorage`, e apenas após consentimento de análise ou publicidade. Os parâmetros aceitos são `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid` e `wbraid`.
-- Sem consentimento, nenhuma tag externa é carregada. Não há IDs Google no repositório.
+- Sem consentimento, nenhuma tag de análise ou publicidade é carregada. Não há IDs Google no repositório. Google Fonts continua sendo uma solicitação externa necessária ao visual atual, antes da escolha; a decisão de hospedar fontes localmente permanece pendente de autorização e revisão de licença.
+- Ao retirar consentimento, o estado é atualizado imediatamente e a atribuição incompatível é removida. Uma tag GTM que já tenha sido carregada não pode ser descarregada com segurança; as atualizações de consentimento passam a restringir novas medições. Recarregamento não é forçado para evitar interrupção e loops.
 
 ## Integrações futuras
 
@@ -52,9 +53,22 @@ No GTM, crie gatilhos de Evento Personalizado para esses nomes e marque apenas `
 - Revisar juridicamente a Política de Privacidade e a nota de responsabilidade.
 - Confirmar o método e token real de verificação do Search Console.
 
+## Dados necessários para a política
+
+- Canal de contato para privacidade.
+- Confirmação da identificação do responsável.
+- Retenção de dados tratados fora do navegador.
+- Canal alternativo, se houver.
+- Revisão jurídica.
+
+Enquanto esses itens estiverem marcados como `[PENDENTE]`, a política deve ficar em `noindex` e fora do sitemap.
+
 ## Teste manual de consentimento
 
-1. Abra o site em uma janela privada e rejeite os cookies; confirme que não há carregamento Google e que os links WhatsApp ainda funcionam.
-2. Altere a escolha em `Preferências de cookies` e recarregue a página para confirmar a persistência.
-3. Abra a página com UTMs, aceite análise ou publicidade e clique em um CTA; inspecione `window.dataLayer` no console.
-4. Com um ID GTM real apenas no ambiente de teste, use o modo Preview do GTM e valide consentimento e eventos antes de publicar.
+1. Em uma janela privada, abra o site e confirme banner visível, Consent Mode padrão negado e ausência de carregamento GTM.
+2. Clique em `Configurar`, feche com X, `Esc` e clique no fundo em testes separados; confirme que nada foi salvo e o banner continua disponível.
+3. Clique em `Rejeitar`; confirme no `localStorage` que análise e publicidade são falsas, não há GTM e eventos não entram no `dataLayer`.
+4. Clique em `Aceitar`; confirme os quatro campos Consent Mode concedidos, ausência de script externo com IDs vazios e persistência após recarregar.
+5. Reabra pelo rodapé, marque somente análise e salve; confirme `analytics_storage` concedido, três campos publicitários negados e ausência de click IDs no `sessionStorage`.
+6. Abra a página com UTMs, aceite a categoria aplicável e clique em um CTA; inspecione `window.dataLayer`. Confirme que `page_location` não possui query string e a mensagem do WhatsApp não inclui atribuição.
+7. Desative JavaScript e confirme que os links essenciais, inclusive WhatsApp, continuam navegáveis. Com um ID GTM real apenas em pré-publicação, use o modo Preview do GTM antes de qualquer publicação.

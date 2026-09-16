@@ -6,10 +6,22 @@ const whatsappMessage = 'Olá! Vim pelo site da Maria Zilda e gostaria de entend
 
 window.dataLayer = window.dataLayer || [];
 function gtag() { window.dataLayer.push(arguments); }
-gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', wait_for_update: 500 });
+gtag('consent', 'default', {
+  analytics_storage: 'denied',
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  wait_for_update: 500
+});
 
 function readConsent() {
-  try { return JSON.parse(localStorage.getItem(consentStorageKey)); } catch { return null; }
+  try { return normalizeConsent(JSON.parse(localStorage.getItem(consentStorageKey))); } catch { return null; }
+}
+
+function normalizeConsent(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  if (value.necessary !== true || typeof value.analysis !== 'boolean' || typeof value.advertising !== 'boolean') return null;
+  return { necessary: true, analysis: value.analysis, advertising: value.advertising };
 }
 
 function hasConsent(category) {
@@ -43,12 +55,16 @@ function activateGoogleTags() {
   document.head.append(script);
 }
 
-function updateConsent(consent) {
-  localStorage.setItem(consentStorageKey, JSON.stringify(consent));
+function applyConsentState(consent) {
   gtag('consent', 'update', {
     analytics_storage: consent.analysis ? 'granted' : 'denied',
-    ad_storage: consent.advertising ? 'granted' : 'denied'
+    ad_storage: consent.advertising ? 'granted' : 'denied',
+    ad_user_data: consent.advertising ? 'granted' : 'denied',
+    ad_personalization: consent.advertising ? 'granted' : 'denied'
   });
+}
+
+function removeIncompatibleAttribution(consent) {
   if (!consent.analysis && !consent.advertising) {
     sessionStorage.removeItem(attributionStorageKey);
   } else if (!consent.advertising) {
@@ -59,6 +75,14 @@ function updateConsent(consent) {
       else sessionStorage.removeItem(attributionStorageKey);
     } catch { sessionStorage.removeItem(attributionStorageKey); }
   }
+}
+
+function updateConsent(consent) {
+  const normalizedConsent = normalizeConsent(consent);
+  if (!normalizedConsent) return;
+  localStorage.setItem(consentStorageKey, JSON.stringify(normalizedConsent));
+  applyConsentState(normalizedConsent);
+  removeIncompatibleAttribution(normalizedConsent);
   storeAttribution();
   activateGoogleTags();
 }
@@ -73,34 +97,44 @@ function setupConsent() {
   const banner = document.createElement('section');
   banner.className = 'cookie-banner';
   banner.setAttribute('aria-labelledby', 'cookie-banner-title');
-  banner.innerHTML = '<h2 id="cookie-banner-title">Sua privacidade</h2><p>Usamos cookies necessários para guardar sua escolha. Análise e publicidade dependem da sua autorização.</p><div class="cookie-actions"><button class="cookie-accept" type="button">Aceitar</button><button class="cookie-reject" type="button">Rejeitar</button><button class="cookie-configure" type="button">Configurar</button></div>';
+  banner.innerHTML = '<h2 id="cookie-banner-title">Sua privacidade</h2><p>Usamos cookies necessários para guardar sua escolha. Análise e publicidade dependem da sua autorização. <a href="/politica-de-privacidade/">Saiba mais na Política de Privacidade.</a></p><div class="cookie-actions"><button class="cookie-accept" type="button">Aceitar</button><button class="cookie-reject" type="button">Rejeitar</button><button class="cookie-configure" type="button">Configurar</button></div>';
   const dialog = document.createElement('dialog');
   dialog.className = 'cookie-dialog';
   dialog.setAttribute('aria-labelledby', 'cookie-dialog-title');
-  dialog.innerHTML = '<form method="dialog"><button class="dialog-close" value="cancel" aria-label="Fechar preferências">×</button><h2 id="cookie-dialog-title">Preferências de cookies</h2><p>Escolha quais categorias não essenciais deseja permitir.</p><label class="cookie-option"><input type="checkbox" checked disabled><span><strong>Estritamente necessários</strong>Guardam sua escolha de privacidade e não podem ser desativados.</span></label><label class="cookie-option"><input name="analysis" type="checkbox"><span><strong>Análise</strong>Ajuda a entender, de forma agregada, como o site é utilizado.</span></label><label class="cookie-option"><input name="advertising" type="checkbox"><span><strong>Publicidade</strong>Permite medir campanhas quando ferramentas Google forem configuradas.</span></label><div class="cookie-actions"><button class="cookie-save" value="save">Salvar preferências</button><button class="cookie-reject" type="button">Rejeitar tudo</button></div></form>';
+  dialog.innerHTML = '<form><button class="dialog-close" type="button" aria-label="Fechar preferências">×</button><h2 id="cookie-dialog-title">Preferências de cookies</h2><p>Escolha quais categorias não essenciais deseja permitir.</p><label class="cookie-option"><input type="checkbox" checked disabled><span><strong>Estritamente necessários</strong>Guardam sua escolha de privacidade e não podem ser desativados.</span></label><label class="cookie-option"><input name="analysis" type="checkbox"><span><strong>Análise</strong>Ajuda a entender, de forma agregada, como o site é utilizado.</span></label><label class="cookie-option"><input name="advertising" type="checkbox"><span><strong>Publicidade</strong>Permite medir campanhas quando ferramentas Google forem configuradas.</span></label><div class="cookie-actions"><button class="cookie-save" type="submit">Salvar preferências</button><button class="cookie-reject" type="button">Rejeitar tudo</button></div></form>';
   document.body.append(banner, dialog);
+  const form = dialog.querySelector('form');
+  const closeButton = dialog.querySelector('.dialog-close');
   let returnFocus;
   const closeBanner = () => banner.remove();
   const save = (consent) => { updateConsent(consent); closeBanner(); if (dialog.open) dialog.close(); };
   const openDialog = (trigger) => {
     returnFocus = trigger || document.activeElement;
     const consent = readConsent();
-    dialog.elements.analysis.checked = Boolean(consent?.analysis);
-    dialog.elements.advertising.checked = Boolean(consent?.advertising);
+    form.elements.analysis.checked = Boolean(consent?.analysis);
+    form.elements.advertising.checked = Boolean(consent?.advertising);
     dialog.showModal();
-    dialog.querySelector('.dialog-close').focus();
+    closeButton.focus();
   };
   banner.querySelector('.cookie-accept').addEventListener('click', () => save({ necessary: true, analysis: true, advertising: true }));
   banner.querySelector('.cookie-reject').addEventListener('click', () => save({ necessary: true, analysis: false, advertising: false }));
   banner.querySelector('.cookie-configure').addEventListener('click', () => openDialog(banner.querySelector('.cookie-configure')));
   dialog.querySelector('.cookie-reject').addEventListener('click', () => save({ necessary: true, analysis: false, advertising: false }));
+  closeButton.addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => returnFocus?.focus());
+  dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   dialog.addEventListener('submit', (event) => {
     event.preventDefault();
-    save({ necessary: true, analysis: dialog.elements.analysis.checked, advertising: dialog.elements.advertising.checked });
+    save({ necessary: true, analysis: form.elements.analysis.checked, advertising: form.elements.advertising.checked });
   });
   document.querySelectorAll('[data-cookie-preferences]').forEach((trigger) => trigger.addEventListener('click', () => openDialog(trigger)));
-  if (existingConsent) { closeBanner(); storeAttribution(); activateGoogleTags(); }
+  if (existingConsent) {
+    applyConsentState(existingConsent);
+    removeIncompatibleAttribution(existingConsent);
+    closeBanner();
+    storeAttribution();
+    activateGoogleTags();
+  }
 }
 
 function setupTracking() {
