@@ -11,7 +11,7 @@ Não há dependências instaladas, lint ou suíte de testes neste momento.
 
 ## Privacidade e consentimento
 
-- A política provisória está em `politica-de-privacidade/index.html`. O texto exige revisão jurídica antes da publicação definitiva e contém pendências explícitas de contato e identificação.
+- A política está em `politica-de-privacidade/index.html` e pode ser acessada pelo rodapé. Solicitações de privacidade devem ser enviadas para `mariazildaterapeuta@gmail.com`.
 - `script.js` inicia o consentimento de análise e publicidade como negado. A preferência fica em `localStorage` sob `maria-zilda-cookie-consent`; é possível alterá-la pelo rodapé.
 - Parâmetros de atribuição são mantidos somente durante a sessão, em `sessionStorage`, e apenas após consentimento de análise ou publicidade. Os parâmetros aceitos são `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid` e `wbraid`.
 - Sem consentimento, nenhuma tag de análise ou publicidade é carregada. Não há IDs Google no repositório. Google Fonts continua sendo uma solicitação externa necessária ao visual atual, antes da escolha; a decisão de hospedar fontes localmente permanece pendente de autorização e revisão de licença.
@@ -48,20 +48,9 @@ No GTM, crie gatilhos de Evento Personalizado para esses nomes e marque apenas `
 ## Pendências antes de tráfego pago
 
 - Criar as contas Google e fornecer IDs reais.
-- Informar e-mail/canal de privacidade e confirmar dados de identificação na política.
 - Definir duração, plataforma, horários, pagamento, agendamento, cancelamento, disponibilidade presencial e como consultar valores antes de expor essas informações.
 - Revisar juridicamente a Política de Privacidade e a nota de responsabilidade.
 - Confirmar o método e token real de verificação do Search Console.
-
-## Dados necessários para a política
-
-- Canal de contato para privacidade.
-- Confirmação da identificação do responsável.
-- Retenção de dados tratados fora do navegador.
-- Canal alternativo, se houver.
-- Revisão jurídica.
-
-Enquanto esses itens estiverem marcados como `[PENDENTE]`, a política deve ficar em `noindex` e fora do sitemap.
 
 ## Teste manual de consentimento
 

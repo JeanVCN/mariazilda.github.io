@@ -22,8 +22,11 @@ if (!script.includes('href="/politica-de-privacidade/"')) throw new Error('Link 
 if (!/GTM_CONTAINER_ID:\s*''/.test(trackingConfig) || !/GA4_MEASUREMENT_ID:\s*''/.test(trackingConfig) || !/GOOGLE_ADS_ID:\s*''/.test(trackingConfig)) throw new Error('IDs Google devem permanecer vazios');
 if (/GTM-[A-Z0-9]+|G-[A-Z0-9]+|AW-[A-Z0-9]+/.test(trackingConfig)) throw new Error('ID Google fictício encontrado');
 if (/utm_|gclid|gbraid|wbraid/i.test(script.match(/const whatsappMessage = .*;/)?.[0] || '')) throw new Error('Mensagem do WhatsApp contém atribuição');
-if (policy.includes('[PENDENTE')) {
-  if (!policy.includes('name="robots" content="noindex, follow"')) throw new Error('Política provisória deve permanecer noindex');
-  if (sitemap.includes('politica-de-privacidade')) throw new Error('Política provisória não pode estar no sitemap');
-}
+if (policy.includes('[PENDENTE') || policy.includes('Texto provisório')) throw new Error('Política contém conteúdo provisório');
+if (!policy.includes('name="robots" content="index, follow"')) throw new Error('Política final deve ser indexável');
+if (!policy.includes('https://terapeutamariazilda.com.br/politica-de-privacidade/')) throw new Error('Canonical da política ausente');
+if (!sitemap.includes('https://terapeutamariazilda.com.br/politica-de-privacidade/')) throw new Error('Política final ausente do sitemap');
+if (!policy.includes('mariazildaterapeuta@gmail.com')) throw new Error('Canal de privacidade ausente');
+if (!policy.includes('6 meses de inatividade')) throw new Error('Retenção de contatos ausente');
+if (!policy.includes('não são gravadas por Maria Zilda')) throw new Error('Informação do Google Meet ausente');
 console.log('Validação estática concluída.');
