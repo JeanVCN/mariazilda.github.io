@@ -47,12 +47,22 @@ function storeAttribution() {
 
 function activateGoogleTags() {
   if (!hasConsent('analysis') && !hasConsent('advertising')) return;
-  if (!trackingConfig.GTM_CONTAINER_ID || document.querySelector('[data-gtm-loader]')) return;
-  const script = document.createElement('script');
-  script.async = true;
-  script.dataset.gtmLoader = 'true';
-  script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(trackingConfig.GTM_CONTAINER_ID)}`;
-  document.head.append(script);
+  if (trackingConfig.GTM_CONTAINER_ID && !document.querySelector('[data-gtm-loader]')) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.gtmLoader = 'true';
+    script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(trackingConfig.GTM_CONTAINER_ID)}`;
+    document.head.append(script);
+  }
+  if (trackingConfig.GOOGLE_ADS_ID && !document.querySelector('[data-google-ads-loader]')) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.googleAdsLoader = 'true';
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(trackingConfig.GOOGLE_ADS_ID)}`;
+    document.head.append(script);
+    gtag('js', new Date());
+    gtag('config', trackingConfig.GOOGLE_ADS_ID);
+  }
 }
 
 function applyConsentState(consent) {
@@ -90,6 +100,13 @@ function updateConsent(consent) {
 function pushEvent(event, parameters = {}) {
   if (!hasConsent('analysis') && !hasConsent('advertising')) return;
   window.dataLayer.push({ event, ...parameters, page_location: `${window.location.origin}${window.location.pathname}`, ...getAttribution() });
+  if (event === 'whatsapp_click' && hasConsent('advertising') && trackingConfig.GOOGLE_ADS_ID && trackingConfig.GOOGLE_ADS_CONVERSION_LABEL) {
+    gtag('event', 'conversion', {
+      send_to: `${trackingConfig.GOOGLE_ADS_ID}/${trackingConfig.GOOGLE_ADS_CONVERSION_LABEL}`,
+      value: 0,
+      currency: 'BRL'
+    });
+  }
 }
 
 function setupConsent() {
