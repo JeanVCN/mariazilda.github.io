@@ -11,23 +11,24 @@ Não há dependências instaladas, lint ou suíte de testes neste momento.
 
 ## Privacidade e consentimento
 
-- A política provisória está em `politica-de-privacidade/index.html`. O texto exige revisão jurídica antes da publicação definitiva e contém pendências explícitas de contato e identificação.
+- A política está em `politica-de-privacidade/index.html`; ela identifica a responsável e o canal de privacidade fornecidos pelo projeto. O texto ainda deve passar por revisão jurídica antes de ser tratado como versão definitiva.
 - `script.js` inicia o consentimento de análise e publicidade como negado. A preferência fica em `localStorage` sob `maria-zilda-cookie-consent`; é possível alterá-la pelo rodapé.
 - Parâmetros de atribuição são mantidos somente durante a sessão, em `sessionStorage`, e apenas após consentimento de análise ou publicidade. Os parâmetros aceitos são `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid` e `wbraid`.
-- Sem consentimento, nenhuma tag de análise ou publicidade é carregada. Não há IDs Google no repositório. Google Fonts continua sendo uma solicitação externa necessária ao visual atual, antes da escolha; a decisão de hospedar fontes localmente permanece pendente de autorização e revisão de licença.
+- A tag Google Ads usa os identificadores reais da conta e só é carregada após consentimento de publicidade. O Google Analytics e o Google Tag Manager permanecem sem configuração. Google Fonts continua sendo uma solicitação externa necessária ao visual atual, antes da escolha; a decisão de hospedar fontes localmente permanece pendente de autorização e revisão de licença.
 - Ao retirar consentimento, o estado é atualizado imediatamente e a atribuição incompatível é removida. Uma tag GTM que já tenha sido carregada não pode ser descarregada com segurança; as atualizações de consentimento passam a restringir novas medições. Recarregamento não é forçado para evitar interrupção e loops.
 
-## Integrações futuras
+## Integração atual do Google Ads
 
-Preencha somente IDs reais em `tracking-config.js`:
+`tracking-config.js` contém o ID do Google Ads e o rótulo da ação `Clique no WhatsApp`. Esses valores devem coincidir com a ação de conversão criada na conta. Não altere os identificadores sem conferir a configuração no Google Ads.
 
 ```js
 GTM_CONTAINER_ID: '',
 GA4_MEASUREMENT_ID: '',
-GOOGLE_ADS_ID: ''
+GOOGLE_ADS_ID: 'AW-…',
+GOOGLE_ADS_CONVERSION_LABEL: '…'
 ```
 
-O carregador atual ativa somente o GTM e apenas após consentimento de análise ou publicidade. Após criar e configurar o container GTM, use o ID real em `GTM_CONTAINER_ID` e crie nele as tags GA4 e Google Ads conforme os consentimentos aplicáveis. `GA4_MEASUREMENT_ID` e `GOOGLE_ADS_ID` ficam centralizados para documentar os IDs futuros, mas não são carregados diretamente pelo site. Teste em ambiente de pré-publicação antes de habilitar produção.
+O código emite `whatsapp_click` para o `dataLayer` após consentimento de análise ou publicidade. O evento de conversão do Google Ads só é enviado após consentimento de publicidade. O valor da conversão não é enviado, conforme a configuração da ação no Google Ads. Não há GTM ou GA4 configurados neste momento. Teste o consentimento e o evento em ambiente de pré-publicação antes de publicar alterações no site.
 
 Para Search Console, use a verificação real fornecida pelo Google: adicione a meta tag ao `<head>` de `index.html` ou o arquivo de verificação na raiz. Não use token de exemplo.
 
@@ -47,21 +48,13 @@ No GTM, crie gatilhos de Evento Personalizado para esses nomes e marque apenas `
 
 ## Pendências antes de tráfego pago
 
-- Criar as contas Google e fornecer IDs reais.
-- Informar e-mail/canal de privacidade e confirmar dados de identificação na política.
-- Definir duração, plataforma, horários, pagamento, agendamento, cancelamento, disponibilidade presencial e como consultar valores antes de expor essas informações.
 - Revisar juridicamente a Política de Privacidade e a nota de responsabilidade.
+- Publicar a versão atualizada do site que restringe a tag Ads ao consentimento de publicidade.
+- Fazer um teste controlado da tag e confirmar no Google Ads que a ação de conversão recebeu atividade recente; a conta atualmente mostra a tag como inativa.
+- Confirmar orçamento e data de término antes de ativar; orçamento diário médio não é um teto semanal rígido.
 - Confirmar o método e token real de verificação do Search Console.
 
-## Dados necessários para a política
-
-- Canal de contato para privacidade.
-- Confirmação da identificação do responsável.
-- Retenção de dados tratados fora do navegador.
-- Canal alternativo, se houver.
-- Revisão jurídica.
-
-Enquanto esses itens estiverem marcados como `[PENDENTE]`, a política deve ficar em `noindex` e fora do sitemap.
+Enquanto a revisão jurídica estiver pendente, a política continua marcada como provisória, em `noindex` e fora do sitemap.
 
 ## Teste manual de consentimento
 

@@ -23,6 +23,8 @@ if (!/GTM_CONTAINER_ID:\s*''/.test(trackingConfig)) throw new Error('GTM ainda n
 if (!/GA4_MEASUREMENT_ID:\s*''/.test(trackingConfig)) throw new Error('GA4 ainda não configurado: o campo deve permanecer vazio');
 if (!/GOOGLE_ADS_ID:\s*'AW-\d+'/.test(trackingConfig)) throw new Error('ID real do Google Ads ausente ou inválido');
 if (!/GOOGLE_ADS_CONVERSION_LABEL:\s*'[A-Za-z0-9_-]+'/.test(trackingConfig)) throw new Error('Rótulo de conversão do Google Ads ausente ou inválido');
+if (!script.includes("trackingConfig.GOOGLE_ADS_ID && hasConsent('advertising')")) throw new Error('A tag do Google Ads deve exigir consentimento de publicidade');
+if (/send_to:[\s\S]{0,180}value:\s*0/.test(script)) throw new Error('A conversão não deve enviar valor zero quando o Google Ads está configurado para não usar valor');
 if (/utm_|gclid|gbraid|wbraid/i.test(script.match(/const whatsappMessage = .*;/)?.[0] || '')) throw new Error('Mensagem do WhatsApp contém atribuição');
 if (policy.includes('[PENDENTE')) {
   if (!policy.includes('name="robots" content="noindex, follow"')) throw new Error('Política provisória deve permanecer noindex');
