@@ -54,7 +54,7 @@ function activateGoogleTags() {
     script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(trackingConfig.GTM_CONTAINER_ID)}`;
     document.head.append(script);
   }
-  if (trackingConfig.GOOGLE_ADS_ID && !document.querySelector('[data-google-ads-loader]')) {
+  if (trackingConfig.GOOGLE_ADS_ID && hasConsent('advertising') && !document.querySelector('[data-google-ads-loader]')) {
     const script = document.createElement('script');
     script.async = true;
     script.dataset.googleAdsLoader = 'true';
@@ -102,9 +102,7 @@ function pushEvent(event, parameters = {}) {
   window.dataLayer.push({ event, ...parameters, page_location: `${window.location.origin}${window.location.pathname}`, ...getAttribution() });
   if (event === 'whatsapp_click' && hasConsent('advertising') && trackingConfig.GOOGLE_ADS_ID && trackingConfig.GOOGLE_ADS_CONVERSION_LABEL) {
     gtag('event', 'conversion', {
-      send_to: `${trackingConfig.GOOGLE_ADS_ID}/${trackingConfig.GOOGLE_ADS_CONVERSION_LABEL}`,
-      value: 0,
-      currency: 'BRL'
+      send_to: `${trackingConfig.GOOGLE_ADS_ID}/${trackingConfig.GOOGLE_ADS_CONVERSION_LABEL}`
     });
   }
 }
