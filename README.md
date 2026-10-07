@@ -11,7 +11,7 @@ Não há dependências instaladas, lint ou suíte de testes neste momento.
 
 ## Privacidade e consentimento
 
-- A política está em `politica-de-privacidade/index.html`; ela identifica a responsável e o canal de privacidade fornecidos pelo projeto. O texto ainda deve passar por revisão jurídica antes de ser tratado como versão definitiva.
+- A política está em `politica-de-privacidade/index.html`; o texto descreve os fluxos técnicos encontrados no código, incluindo armazenamento local, atribuição de campanha, Google Ads, Google Fonts, GitHub Pages e links para WhatsApp/Meet. A redação foi atualizada como aviso operacional, mas ainda precisa de revisão jurídica antes de ser considerada definitiva.
 - `script.js` inicia o consentimento de análise e publicidade como negado. A preferência fica em `localStorage` sob `maria-zilda-cookie-consent`; é possível alterá-la pelo rodapé.
 - Parâmetros de atribuição são mantidos somente durante a sessão, em `sessionStorage`, e apenas após consentimento de análise ou publicidade. Os parâmetros aceitos são `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid` e `wbraid`.
 - A tag Google Ads usa os identificadores reais da conta e só é carregada após consentimento de publicidade. O Google Analytics e o Google Tag Manager permanecem sem configuração. Google Fonts continua sendo uma solicitação externa necessária ao visual atual, antes da escolha; a decisão de hospedar fontes localmente permanece pendente de autorização e revisão de licença.
@@ -54,7 +54,7 @@ No GTM, crie gatilhos de Evento Personalizado para esses nomes e marque apenas `
 - Confirmar orçamento e data de término antes de ativar; orçamento diário médio não é um teto semanal rígido.
 - Confirmar o método e token real de verificação do Search Console.
 
-Enquanto a revisão jurídica estiver pendente, a política continua marcada como provisória, em `noindex` e fora do sitemap.
+Enquanto a revisão jurídica estiver pendente, a política permanece em `noindex` e fora do sitemap.
 
 ## Teste manual de consentimento
 
